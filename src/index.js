@@ -14,7 +14,7 @@ const countryApiService = new CountryApi();
 refs.input.addEventListener('input', debounce(onInput, 300));
 
 function onInput() {
-  const searchQuery = refs.input.value;
+  const searchQuery = refs.input.value.trim();
   console.log(searchQuery);
   countryApiService.fetchCountries(searchQuery).then(country => {
     renderInfo(country);
