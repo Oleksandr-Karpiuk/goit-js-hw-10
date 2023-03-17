@@ -1,13 +1,14 @@
-const URL = `https://restcountries.com/v3.1/name/{name}`;
+export default class CountryApi {
+  constructor() {
+    this.queryParams = '?fields=name,capital,population,coatOfArms,languages';
+  }
 
-// Тобі потрібні тільки наступні властивості:
-// name.official
-// capital
-// population
-// flags.svg
-// languages
-// });
-
-export default function fetchCountries(name) {
-  console.log(name);
+  fetchCountries(searchQuery) {
+    return fetch(
+      `https://restcountries.com/v3.1/name/${searchQuery}${this.queryParams}`
+    )
+      .then(response => response.json())
+      .then(({ country }) => country)
+      .catch(error => console.log(error));
+  }
 }
