@@ -1,14 +1,11 @@
-export default class CountryApi {
-  constructor() {
-    this.queryParams = '?fields=name,capital,population,coatOfArms,languages';
-  }
+export const fetchCountries = searchQuery => {
+  const BASE_URL = 'https://restcountries.com/v3.1/name/';
+  const properties = 'fields=name,capital,population,flags,languages';
 
-  fetchCountries(searchQuery) {
-    return fetch(
-      `https://restcountries.com/v3.1/name/${searchQuery}${this.queryParams}`
-    )
-      .then(response => response.json())
-      .then(({ country }) => country)
-      .catch(error => console.log(error));
-  }
-}
+  return fetch(`${BASE_URL}${searchQuery}?${properties}`).then(response => {
+    if (!response.ok) {
+      throw new Error(response.status);
+    }
+    return response.json();
+  });
+};
