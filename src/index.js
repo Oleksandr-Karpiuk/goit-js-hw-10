@@ -1,73 +1,78 @@
 import './css/styles.css';
 import debounce from 'lodash.debounce';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { fetchCountries } from './js/fetchCountries';
+import Notiflix from 'notiflix';
+
+Notiflix.Notify.init({
+  position: 'center-top',
+});
 
 const DEBOUNCE_DELAY = 300;
 
-const searchEl = document.querySelector('#search-box');
-const countryInfo = document.querySelector('.country-info');
-const countryList = document.querySelector('.country-list');
+const inputRef = document.querySelector('#search-box');
+const countryInfoRef = document.querySelector('.country-info');
+const countryListRef = document.querySelector('.country-list');
 
-const cleanMarkup = ref => (ref.innerHTML = '');
+function cleanMarkup(ref) {
+  ref.innerHTML = '';
+}
 
-const inputHandler = e => {
-  const textInput = e.target.value.trim();
+inputRef.addEventListener('input', debounce(inputHandler, DEBOUNCE_DELAY));
 
-  if (!textInput) {
-    cleanMarkup(countryList);
-    cleanMarkup(countryInfo);
+function inputHandler(e) {
+  const countryInput = e.target.value.trim();
+
+  if (!countryInput) {
+    cleanMarkup(countryListRef);
+    cleanMarkup(countryInfoRef);
     return;
   }
 
-  fetchCountries(textInput)
+  fetchCountries(countryInput)
     .then(data => {
-      console.log(data);
       if (data.length > 10) {
-        Notify.info(
+        Notiflix.Notify.info(
           'Too many matches found. Please enter a more specific name'
         );
         return;
       }
       renderMarkup(data);
     })
-    .catch(err => {
-      cleanMarkup(countryList);
-      cleanMarkup(countryInfo);
-      Notify.failure('Oops, there is no country with that name');
+    .catch(error => {
+      cleanMarkup(countryListRef);
+      cleanMarkup(countryInfoRef);
+      Notiflix.Notify.failure('Oops, there is no country with that name');
     });
-};
+}
 
-const renderMarkup = data => {
+function renderMarkup(data) {
   if (data.length === 1) {
-    cleanMarkup(countryList);
+    cleanMarkup(countryListRef);
     const markupInfo = createInfoMarkup(data);
-    countryInfo.innerHTML = markupInfo;
+    countryInfoRef.innerHTML = markupInfo;
   } else {
-    cleanMarkup(countryInfo);
+    cleanMarkup(countryInfoRef);
     const markupList = createListMarkup(data);
-    countryList.innerHTML = markupList;
+    countryListRef.innerHTML = markupList;
   }
-};
+}
 
-const createListMarkup = data => {
+function createListMarkup(data) {
   return data
     .map(
       ({ name, flags }) =>
-        `<li><img src="${flags.png}" alt="${name.official}" width="60" height="40">${name.official}</li>`
+        `<li><img src="${flags.svg}" alt="${name.official}" width="60" height="40">${name.official}</li>`
     )
     .join('');
-};
+}
 
-const createInfoMarkup = data => {
+function createInfoMarkup(data) {
   return data.map(
     ({ name, capital, population, flags, languages }) =>
-      `<img src="${flags.png}" alt="${name.official}" width="200" height="100">
+      `<img src="${flags.svg}" alt="${name.official}" width="200" height="100">
       <h1>${name.official}</h1>
       <p>Capital: ${capital}</p>
       <p>Population: ${population}</p>
       <p>Languages: ${Object.values(languages)}</p>`
   );
-};
-
-searchEl.addEventListener('input', debounce(inputHandler, DEBOUNCE_DELAY));
+}
