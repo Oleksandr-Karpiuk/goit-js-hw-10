@@ -13,7 +13,11 @@ body {
   background-color: #fafafa;
   color: #ffffff;
   line-height: 1.5;
-  background: url(../image/world.webp);
+  background-image: linear-gradient(
+      rgba(47, 48, 58, 0.4),
+      rgba(47, 48, 58, 0.4)
+    ),
+    url(../image/world.webp);
   background-size: cover;
   background-repeat: no-repeat;
 }
