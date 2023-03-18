@@ -31,6 +31,8 @@ function inputHandler(e) {
   fetchCountries(countryInput)
     .then(data => {
       if (data.length > 10) {
+        cleanMarkup(countryListRef);
+        cleanMarkup(countryInfoRef);
         Notiflix.Notify.info(
           'Too many matches found. Please enter a more specific name'
         );
